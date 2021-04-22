@@ -109,7 +109,6 @@ public class ActivityHome extends AppCompatActivity {
             homeRv.setLayoutManager(new LinearLayoutManager(this));
             homeRv.setAdapter(adapterList);
         }
-
     }
 
 }
