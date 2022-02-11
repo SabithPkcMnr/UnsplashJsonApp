@@ -2,6 +2,7 @@ package com.sabithpkcmnr.unsplashjson;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +63,14 @@ public class AdapterList extends RecyclerView.Adapter<AdapterList.MyViewHolder> 
                 .into(holder.itemImage);
 
         setScaleAnimation(holder.itemView);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.startActivity(new Intent(context, ActivityViewer.class)
+                        .putExtra("imageUrl",modelList.get(position).getImageUrl()));
+            }
+        });
     }
 
     private void setScaleAnimation(View view) {
