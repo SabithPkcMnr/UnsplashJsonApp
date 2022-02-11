@@ -68,7 +68,7 @@ public class AdapterList extends RecyclerView.Adapter<AdapterList.MyViewHolder> 
             @Override
             public void onClick(View view) {
                 context.startActivity(new Intent(context, ActivityViewer.class)
-                        .putExtra("imageUrl",modelList.get(position).getImageUrl()));
+                        .putExtra("imageUrl",modelList.get(position).getDownloadUrl()));
             }
         });
     }
