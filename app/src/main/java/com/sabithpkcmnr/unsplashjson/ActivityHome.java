@@ -2,10 +2,10 @@ package com.sabithpkcmnr.unsplashjson;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,7 +30,8 @@ import java.util.ArrayList;
 
 public class ActivityHome extends AppCompatActivity {
 
-    int pageNo = 0;
+    int limitPage = 0;  //Page count on single fetch
+    int limitImage = 9; //Total image to fetch on single try
     boolean canLoadAgain;
 
     RecyclerView itemList;
@@ -41,7 +42,7 @@ public class ActivityHome extends AppCompatActivity {
     ArrayList<ModelList> modelList = new ArrayList<>();
 
     String imageDataUrlOne = "https://picsum.photos/v2/list?page=";
-    String imageDataUrlTwo = "&limit=12";
+    String imageDataUrlTwo = "&limit=" + limitImage;
     String imageDataUrlFinal = "";
 
     @Override
@@ -66,11 +67,11 @@ public class ActivityHome extends AppCompatActivity {
             }
         });
 
-        adapterList = new AdapterList(this, modelList, false);
+        adapterList = new AdapterList(this, modelList, true);
 
         itemList.setHasFixedSize(true);
         itemList.setNestedScrollingEnabled(false);
-        itemList.setLayoutManager(new LinearLayoutManager(this));
+        itemList.setLayoutManager(new GridLayoutManager(this, 3));
         itemList.setAdapter(adapterList);
 
         getImageJsonData();
@@ -85,12 +86,9 @@ public class ActivityHome extends AppCompatActivity {
     }
 
     private void getImageJsonData() {
-        pageNo++;
+        limitPage++;
         canLoadAgain = false;
-        imageDataUrlFinal = imageDataUrlOne + pageNo + imageDataUrlTwo;
-
-        Log.d("logActivityHome", "Page: " + pageNo + " - URL: " + imageDataUrlFinal);
-
+        imageDataUrlFinal = imageDataUrlOne + limitPage + imageDataUrlTwo;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, imageDataUrlFinal,
                 new Response.Listener<String>() {
                     @Override
@@ -128,15 +126,9 @@ public class ActivityHome extends AppCompatActivity {
 
     private void changeListViewType(boolean showGrid) {
         adapterList = new AdapterList(this, modelList, showGrid);
-
-        if (showGrid) {
-            itemList.setLayoutManager(new GridLayoutManager(this, 3));
-            itemList.setAdapter(adapterList);
-
-        } else {
-            itemList.setLayoutManager(new LinearLayoutManager(this));
-            itemList.setAdapter(adapterList);
-        }
+        itemList.setLayoutManager(showGrid ? new GridLayoutManager(this, 3) :
+                new LinearLayoutManager(this));
+        itemList.setAdapter(adapterList);
     }
 
 }

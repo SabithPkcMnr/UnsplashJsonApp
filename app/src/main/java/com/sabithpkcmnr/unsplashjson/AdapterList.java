@@ -72,7 +72,7 @@ public class AdapterList extends RecyclerView.Adapter<AdapterList.MyViewHolder> 
                 ActivityOptionsCompat activityOptionsCompat =
                         ActivityOptionsCompat.makeSceneTransitionAnimation(activity, holder.itemImage, "itemImage");
                 activity.startActivity(new Intent(activity, ActivityViewer.class)
-                        .putExtra("imageUrl", modelList.get(position).getDownloadUrl()),
+                                .putExtra("imageUrl", modelList.get(position).getDownloadUrl()),
                         activityOptionsCompat.toBundle());
             }
         });
