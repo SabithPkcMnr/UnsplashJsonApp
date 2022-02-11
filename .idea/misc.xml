@@ -3,10 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/sabit/Desktop/UnsplashJsonApp/app/src/main/res/layout/activity_home.xml" value="0.38385416666666666" />
+        <entry key="..\:/Users/sabit/Desktop/UnsplashJsonApp/app/src/main/res/layout/activity_home.xml" value="0.3365296803652968" />
         <entry key="..\:/Users/sabit/Desktop/UnsplashJsonApp/app/src/main/res/layout/activity_viewer.xml" value="0.38385416666666666" />
         <entry key="..\:/Users/sabit/Desktop/UnsplashJsonApp/app/src/main/res/layout/item_grid.xml" value="0.38385416666666666" />
-        <entry key="..\:/Users/sabit/Desktop/UnsplashJsonApp/app/src/main/res/layout/item_list.xml" value="0.38385416666666666" />
+        <entry key="..\:/Users/sabit/Desktop/UnsplashJsonApp/app/src/main/res/layout/item_list.xml" value="0.3365296803652968" />
+        <entry key="..\:/Users/sabit/Desktop/UnsplashJsonApp/app/src/main/res/layout/item_menu_switch.xml" value="0.36018518518518516" />
       </map>
     </option>
   </component>

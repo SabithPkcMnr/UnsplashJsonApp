@@ -10,7 +10,6 @@
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/switchList"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColorHighlight="@color/purple_200" />
+        android:layout_height="wrap_content" />
 
 </FrameLayout>

@@ -1,6 +1,7 @@
 package com.sabithpkcmnr.unsplashjson;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -22,40 +24,40 @@ import java.util.ArrayList;
 
 public class AdapterList extends RecyclerView.Adapter<AdapterList.MyViewHolder> {
 
-    Context context;
+    Activity activity;
     boolean isGridType;
     ArrayList<ModelList> modelList;
 
-    public AdapterList(Context context, ArrayList<ModelList> modelList, boolean isGridType) {
+    public AdapterList(Activity activity, ArrayList<ModelList> modelList, boolean isGridType) {
         this.isGridType = isGridType;
         this.modelList = modelList;
-        this.context = context;
+        this.activity = activity;
     }
 
     @NonNull
     @Override
     public AdapterList.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View layoutView = LayoutInflater.from(context).inflate(R.layout.item_list, parent, false);
+        View layoutView = LayoutInflater.from(activity).inflate(R.layout.item_list, parent, false);
         return new MyViewHolder(layoutView);
     }
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull AdapterList.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AdapterList.MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
-        if (!isGridType){
-            holder.itemId.setText("id :" + modelList.get(position).getId());
-            holder.itemWidth.setText("width :" + modelList.get(position).getWidth());
-            holder.itemAuthor.setText("author :" + modelList.get(position).getAuthor());
-            holder.itemHeight.setText("height :" + modelList.get(position).getHeight());
-            holder.itemImageUrl.setText("url :" + modelList.get(position).getImageUrl());
-            holder.itemDownloadUrl.setText("download url :" + modelList.get(position).getDownloadUrl());
+        if (!isGridType) {
+            holder.itemId.setText("ID: " + modelList.get(position).getId());
+            holder.itemWidth.setText("Width: " + modelList.get(position).getWidth());
+            holder.itemAuthor.setText("Author: " + modelList.get(position).getAuthor());
+            holder.itemHeight.setText("Height: " + modelList.get(position).getHeight());
+            holder.itemImageUrl.setText("Page URL: " + modelList.get(position).getImageUrl());
+            holder.itemDownloadUrl.setText("Image URL: " + modelList.get(position).getDownloadUrl());
 
         } else {
             holder.itemContents.setVisibility(View.GONE);
         }
 
-        Glide.with(context)
+        Glide.with(activity)
                 .load(modelList.get(position).getDownloadUrl())
                 .override(250, 250)
                 .transition(new DrawableTransitionOptions().crossFade())
@@ -67,8 +69,11 @@ public class AdapterList extends RecyclerView.Adapter<AdapterList.MyViewHolder> 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.startActivity(new Intent(context, ActivityViewer.class)
-                        .putExtra("imageUrl",modelList.get(position).getDownloadUrl()));
+                ActivityOptionsCompat activityOptionsCompat =
+                        ActivityOptionsCompat.makeSceneTransitionAnimation(activity, holder.itemImage, "itemImage");
+                activity.startActivity(new Intent(activity, ActivityViewer.class)
+                        .putExtra("imageUrl", modelList.get(position).getDownloadUrl()),
+                        activityOptionsCompat.toBundle());
             }
         });
     }
@@ -76,7 +81,7 @@ public class AdapterList extends RecyclerView.Adapter<AdapterList.MyViewHolder> 
     private void setScaleAnimation(View view) {
         ScaleAnimation anim = new ScaleAnimation(0.0f, 1.0f, 0.0f,
                 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        anim.setDuration(500);
+        anim.setDuration(600);
         view.startAnimation(anim);
     }
 

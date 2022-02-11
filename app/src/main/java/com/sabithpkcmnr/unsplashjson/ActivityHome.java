@@ -1,11 +1,15 @@
 package com.sabithpkcmnr.unsplashjson;
 
 import android.os.Bundle;
-import android.view.Menu;
+import android.os.Handler;
+import android.util.Log;
+import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,29 +30,68 @@ import java.util.ArrayList;
 
 public class ActivityHome extends AppCompatActivity {
 
-    RecyclerView homeRv;
+    int pageNo = 0;
+    boolean canLoadAgain;
+
+    RecyclerView itemList;
     AdapterList adapterList;
+    ProgressBar itemProgress;
+    SwitchMaterial itemSwitch;
+    NestedScrollView itemNested;
     ArrayList<ModelList> modelList = new ArrayList<>();
-    String imageDataUrl = "https://picsum.photos/v2/list?page=1&limit=20";
+
+    String imageDataUrlOne = "https://picsum.photos/v2/list?page=";
+    String imageDataUrlTwo = "&limit=12";
+    String imageDataUrlFinal = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        homeRv = findViewById(R.id.homeRv);
+        itemList = findViewById(R.id.itemList);
+        itemNested = findViewById(R.id.itemNested);
+        itemSwitch = findViewById(R.id.itemSwitch);
+        itemProgress = findViewById(R.id.itemProgress);
+
+        itemSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        changeListViewType(isChecked);
+                    }
+                }, 260);
+            }
+        });
+
         adapterList = new AdapterList(this, modelList, false);
 
-        homeRv.setHasFixedSize(true);
-        homeRv.setNestedScrollingEnabled(true);
-        homeRv.setLayoutManager(new LinearLayoutManager(this));
-        homeRv.setAdapter(adapterList);
+        itemList.setHasFixedSize(true);
+        itemList.setNestedScrollingEnabled(false);
+        itemList.setLayoutManager(new LinearLayoutManager(this));
+        itemList.setAdapter(adapterList);
 
         getImageJsonData();
+
+        itemNested.getViewTreeObserver().addOnScrollChangedListener(() -> {
+            View view1 = itemNested.getChildAt(itemNested.getChildCount() - 1);
+            int diff = (view1.getBottom() - (itemNested.getHeight() + itemNested.getScrollY()));
+            if (diff == 0 && canLoadAgain) {
+                getImageJsonData();
+            }
+        });
     }
 
     private void getImageJsonData() {
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, imageDataUrl,
+        pageNo++;
+        canLoadAgain = false;
+        imageDataUrlFinal = imageDataUrlOne + pageNo + imageDataUrlTwo;
+
+        Log.d("logActivityHome", "Page: " + pageNo + " - URL: " + imageDataUrlFinal);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, imageDataUrlFinal,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -66,6 +109,7 @@ public class ActivityHome extends AppCompatActivity {
                                 modelList.add(itemSingle);
                             }
                             adapterList.notifyDataSetChanged();
+                            canLoadAgain = true;
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -82,32 +126,16 @@ public class ActivityHome extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_list_grid, menu);
-        SwitchMaterial mySwitch = menu.findItem(R.id.menuSwitchList)
-                .setActionView(R.layout.item_menu_switch)
-                .getActionView().findViewById(R.id.switchList);
-
-        mySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                changeListViewType(isChecked);
-            }
-        });
-        return true;
-    }
-
-    private void changeListViewType(boolean showGrid){
+    private void changeListViewType(boolean showGrid) {
         adapterList = new AdapterList(this, modelList, showGrid);
 
-        if (showGrid){
-            homeRv.setLayoutManager(new GridLayoutManager(this, 3));
-            homeRv.setAdapter(adapterList);
+        if (showGrid) {
+            itemList.setLayoutManager(new GridLayoutManager(this, 3));
+            itemList.setAdapter(adapterList);
 
         } else {
-            homeRv.setLayoutManager(new LinearLayoutManager(this));
-            homeRv.setAdapter(adapterList);
+            itemList.setLayoutManager(new LinearLayoutManager(this));
+            itemList.setAdapter(adapterList);
         }
     }
 
